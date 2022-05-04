@@ -64,9 +64,7 @@ const deleteUsers = async (req, res = response) => {
 
   const user = await User.findByIdAndUpdate(id, { activated: false });
 
-  res.json({
-    user,
-  });
+  res.json({ user });
 };
 
 module.exports = { getUsers, postUsers, putUsers, patchUsers, deleteUsers };
