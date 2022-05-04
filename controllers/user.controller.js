@@ -58,13 +58,9 @@ const patchUsers = (req, res = response) => {
 
 const deleteUsers = async (req, res = response) => {
   const { id } = req.params;
+  const deletedUser = await User.findByIdAndUpdate(id, { activated: false });
 
-  //Fisicamente lo borramos
-  // const user = await User.findByIdAndDelete(id);
-
-  const user = await User.findByIdAndUpdate(id, { activated: false });
-
-  res.json({ user });
+  res.json({ deletedUser });
 };
 
 module.exports = { getUsers, postUsers, putUsers, patchUsers, deleteUsers };

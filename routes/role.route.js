@@ -25,8 +25,6 @@ router.post(
 
 router.put("/:id", putRoles);
 
-router.patch("/", patchRoles);
-
-router.delete("/", deleteRoles);
+router.delete("/:id", deleteRoles);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const { response, request } = require("express");
 
 const Role = require("../models/role.model");
+const User = require("../models/user.model");
 
 const getRoles = (req = request, res = response) => {
   const { q, nombre = "No name", limit } = req.query;
