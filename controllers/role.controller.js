@@ -1,4 +1,3 @@
-const bcryptjs = require("bcryptjs");
 const { response, request } = require("express");
 
 const Role = require("../models/role.model");
