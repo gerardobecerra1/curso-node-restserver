@@ -1,6 +1,5 @@
-const { default: mongoose } = require("mongoose");
-const Role = require("../models/role.model");
-const User = require("../models/user.model");
+const { Classification, Plant, Role, User } = require("../models");
+/* Role*/
 
 const isValidRole = async (name = "") => {
   const existRole = await Role.findOne({ name });
@@ -10,6 +9,9 @@ const isValidRole = async (name = "") => {
     );
   }
 };
+/* Role*/
+
+/* User*/
 
 const mailRegistered = async (mail = "") => {
   const mailExist = await User.findOne({ mail });
@@ -24,9 +26,30 @@ const existUserId = async (id = "") => {
     throw new Error(`El ID: '${id}' no existe`);
   }
 };
+/* User*/
+
+/* Classifications*/
+const existClassificationById = async (id) => {
+  const existClassification = await Classification.findById(id);
+  if (!existClassification) {
+    throw new Error(`El id: '${id}' no existe`);
+  }
+};
+/* Classifications*/
+
+/* Plantas*/
+const existPlantById = async (id) => {
+  const existPlant = await Plant.findById(id);
+  if (!existPlant) {
+    throw new Error(`El id: '${id}' no existe`);
+  }
+};
+/* Plantas*/
 
 module.exports = {
   isValidRole,
   mailRegistered,
   existUserId,
+  existClassificationById,
+  existPlantById,
 };

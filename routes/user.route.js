@@ -45,7 +45,7 @@ router.post(
 router.put(
   "/:id",
   [
-    check("id", "No es un ID váido").isMongoId(),
+    check("id", "No es un ID válido").isMongoId(),
     check("id").custom(existUserId),
     check("role_id").custom(isValidRole),
     validateFields,
@@ -61,7 +61,7 @@ router.delete(
     validateJWT,
     // isAdminRole, //Solo puede ser Administrador
     hasRole("Administrador", "Colaborador"), //Puede ser cualquiera que se necesite o se declare
-    check("id", "No es un ID váido").isMongoId(),
+    check("id", "No es un ID válido").isMongoId(),
     check("id").custom(existUserId),
     validateFields,
   ],
