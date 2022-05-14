@@ -46,10 +46,22 @@ const existPlantById = async (id) => {
 };
 /* Plantas*/
 
+/*Validar colleciones permitidas*/
+const allowedCollections = (collection = "", collections = []) => {
+  const included = collections.includes(collection);
+  if (!included) {
+    throw new Error(
+      `La colleción: "${collection}" no es permitida, solo se permiten las siguientes colleciones: "${collections}"`
+    );
+  }
+  return true;
+};
+
 module.exports = {
   isValidRole,
   mailRegistered,
   existUserId,
   existClassificationById,
   existPlantById,
+  allowedCollections,
 };
