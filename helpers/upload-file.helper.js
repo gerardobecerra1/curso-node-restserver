@@ -1,11 +1,7 @@
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 
-const uploadFile = (
-  files,
-  validExtensions = ["jpg", "png", "jpeg"],
-  folder = ""
-) => {
+const uploadLocalFile = (files, validExtensions = [], folder = "") => {
   return new Promise((resolve, reject) => {
     const { file } = files;
     const cutName = file.name.split(".");
@@ -32,5 +28,5 @@ const uploadFile = (
 };
 
 module.exports = {
-  uploadFile,
+  uploadLocalFile,
 };

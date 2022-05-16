@@ -1,5 +1,5 @@
 const { response } = require("express");
-const { uploadFile } = require("../helpers/upload-file.helper");
+const { uploadLocalFile } = require("../helpers/upload-file.helper");
 const { User, Plant } = require("../models");
 const path = require("path");
 const fs = require("fs");
@@ -8,13 +8,27 @@ const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
 cloudinary.config(process.env.CLOUDINARY_URL);
 
+this.folderPaths = {
+  imgFolder: "images",
+  txtFolder: "texts",
+};
+
+this.validExt = {
+  imgExts: ["jpg", "png", "jpeg"],
+  txtExts: ["txt", "md"],
+};
+
 const loadFile = async (req, res = response) => {
   try {
     //txt, md
-    // const fileName = await uploadFile(req.files, ["txt", "md"], "texts");
+    // const fileName = await uploadLocalFile(req.files, this.validExt.txtExts,  this.folderPaths.txtFolder);
 
     //imagenes
-    const fileName = await uploadFile(req.files, undefined, "images");
+    const fileName = await uploadLocalFile(
+      req.files,
+      this.validExt.imgExts,
+      this.folderPaths.imgFolder
+    );
 
     res.json({ fileName });
   } catch (error) {
@@ -52,18 +66,18 @@ const updateLocalFile = async (req, res = response) => {
   //Limpiar imagenes previas
   if (model.image) {
     //Borrar imagen del servidor
-    const pathImage = path.join(
+    const pathFolder = path.join(
       __dirname,
       "../uploads",
       collection,
       model.image
     );
-    if (fs.existsSync(pathImage)) {
-      fs.unlinkSync(pathImage);
+    if (fs.existsSync(pathFolder)) {
+      fs.unlinkSync(pathFolder);
     }
   }
 
-  const name = await uploadFile(req.files, undefined, collection);
+  const name = await uploadLocalFile(req.files, undefined, collection);
   model.image = name;
 
   await model.save();
@@ -71,7 +85,7 @@ const updateLocalFile = async (req, res = response) => {
   res.json(model);
 };
 
-const updateCloudinaryImage = async (req, res = response) => {
+const updateCloudinaryFile = async (req, res = response) => {
   const { id, collection } = req.params;
 
   let model;
@@ -101,13 +115,23 @@ const updateCloudinaryImage = async (req, res = response) => {
   //Limpiar imagenes previas
   if (model.image) {
     const nameArr = model.image.split("/");
-    const name = nameArr[nameArr.length - 1];
+
+    const pathImg = [
+      nameArr[nameArr.length - 3],
+      nameArr[nameArr.length - 2],
+      nameArr[nameArr.length - 1],
+    ];
+    const name = pathImg.join("/");
     const [public_id] = name.split(".");
+
     cloudinary.uploader.destroy(public_id);
   }
 
   const { tempFilePath } = req.files.file;
-  const { secure_url } = await cloudinary.uploader.upload(tempFilePath);
+
+  const { secure_url } = await cloudinary.uploader.upload(tempFilePath, {
+    folder: `${this.folderPaths.imgFolder}/${collection}`,
+  });
 
   model.image = secure_url;
 
@@ -141,15 +165,15 @@ const showImage = async (req, res = response) => {
   }
 
   if (model.image) {
-    const pathImage = path.join(
+    const pathFolder = path.join(
       __dirname,
       "../uploads",
       collection,
       model.image
     );
 
-    if (fs.existsSync(pathImage)) {
-      return res.sendFile(pathImage);
+    if (fs.existsSync(pathFolder)) {
+      return res.sendFile(pathFolder);
     }
   }
 
@@ -159,6 +183,6 @@ const showImage = async (req, res = response) => {
 module.exports = {
   loadFile,
   updateLocalFile,
-  updateCloudinaryImage,
+  updateCloudinaryFile,
   showImage,
 };
